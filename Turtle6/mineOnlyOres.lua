@@ -9,6 +9,12 @@ local forward, side = ...
 local pickaxeName = "minecraft:diamond_pickaxe"
 local axeName = "minecraft:diamond_axe"
 
+local liquids = {
+    ["minecraft:water"] = true,
+    ["minecraft:lava"] = true,
+    ["tconstruct:molten_ender_fluid"] = true
+}
+
 local function checkArgs()
     if (forward == nil or side == nil)
     then
@@ -88,6 +94,16 @@ local function dig(inspectFunc, digFunc)
     local success, data = inspectFunc()
     while success == true
     do
+        if liquids[data.name] ~= nil
+        then
+            break
+        end
+
+        if data.name == "forbidden_arcanus:stella_arcanum"
+        then
+            error("!Danger! Explosive ore found !Danger!")
+        end
+
         if data.tags["forge:ores"] == true
         then
             digFunc("left")

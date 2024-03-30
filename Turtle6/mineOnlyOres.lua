@@ -4,10 +4,11 @@
 -- Alternative tool (diamond axe) must be in right hand
 -- Fuel (oak planks, coal, or coal blocks) in slot 16
 
-local forward, side = ...
+local forward, side, contactComputerId = ...
 
 local pickaxeName = "minecraft:diamond_pickaxe"
 local axeName = "minecraft:diamond_axe"
+local modemName = "computercraft:wireless_modem_normal"
 
 local liquids = {
     ["minecraft:water"] = true,
@@ -25,14 +26,19 @@ local function checkArgs()
     then
         error("Second argument must be even.")
     end
+
+    if contactComputerId == nil
+    then
+        error("Must provide computer contact id")
+    end
 end
 
 local function checkStartingState()
     turtle.select(1)
     local item = turtle.getItemDetail()
-    if (item ~= nil)
+    if (item == nil or item.name ~= modemName)
     then
-        error("First inventory slot should be empty")
+        error("Wireless modem required in the first slot")
     end
 
     turtle.equipRight()
@@ -101,6 +107,11 @@ local function dig(inspectFunc, digFunc)
 
         if data.name == "forbidden_arcanus:stella_arcanum"
         then
+            turtle.equipRight()
+            rednet.open("right")
+            rednet.send(tonumber(contactComputerId), "Explosive ore found. Digging processes terminated")
+            turtle.equipRight()
+
             error("!Danger! Explosive ore found !Danger!")
         end
 
@@ -134,7 +145,7 @@ local function dropOffItems(distance)
         turtle.forward()
     end
     turtle.turnRight()
-    for i = 1, 15, 1
+    for i = 2, 15, 1
     do
         turtle.select(i)
         turtle.drop()

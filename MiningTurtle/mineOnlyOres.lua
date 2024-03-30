@@ -1,8 +1,12 @@
--- To start, specify the amount of blocks to dig FORWARD, and to the SIDE
+-- To start, specify:
+--      the amount of blocks to dig FORWARD,
+--      the amount of blocks to dig LEFT,
+--      and computer number to communicate with in an emergency
 -- A chest must be placed behind the turtle
 -- Main tool (diamond pickaxe) must be in left hand
 -- Alternative tool (diamond axe) must be in right hand
 -- Fuel (oak planks, coal, or coal blocks) in slot 16
+-- Wireless modem in slot 16
 
 local forward, side, contactComputerId = ...
 

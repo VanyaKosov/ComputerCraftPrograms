@@ -8,7 +8,7 @@
 -- Fuel (oak planks, coal, or coal blocks) in slot 16
 -- Wireless modem in slot 16
 
-local forward, side, contactComputerId = ...
+local forward, left, contactComputerId = ...
 
 local pickaxeName = "minecraft:diamond_pickaxe"
 local axeName = "minecraft:diamond_axe"
@@ -21,12 +21,12 @@ local liquids = {
 }
 
 local function checkArgs()
-    if (forward == nil or side == nil)
+    if (forward == nil or left == nil)
     then
         error("Must provide dimentions")
     end
 
-    if side % 2 ~= 0
+    if left % 2 ~= 0
     then
         error("Second argument must be even.")
     end
@@ -162,6 +162,41 @@ local function dropOffItems(distance)
     end
 end
 
+local function saveStartingInfo()
+    turtle.equipRight()
+    local x, y, z = gps.locate()
+    turtle.equipRight()
+    local file = fs.open("xyz.txt", "w")
+    file.write(x)
+    file.write("\n")
+    file.write(y)
+    file.write("\n")
+    file.write(z)
+    file.write("\n")
+
+    digForward()
+    turtle.forward()
+    turtle.equipRight()
+    local nx, ny, nz = gps.locate()
+    turtle.equipRight()
+    turtle.back()
+    file.write(nx)
+    file.write("\n")
+    file.write(ny)
+    file.write("\n")
+    file.write(nz)
+    file.write("\n")
+
+    file.write(forward)
+    file.write("\n")
+    file.write(left)
+    file.write("\n")
+    file.write(contactComputerId)
+    file.write("\n")
+
+    file.close()
+end
+
 --
 --
 -- START OF PROGRAM
@@ -171,7 +206,9 @@ end
 checkArgs()
 checkStartingState()
 
-for i = 1, side, 1
+saveStartingInfo()
+
+for i = 1, left, 1
 do
     -- Dig forward
     for j = 1, forward, 1
@@ -204,3 +241,5 @@ do
         turtle.turnRight()
     end
 end
+
+fs.delete("xyz.txt")
